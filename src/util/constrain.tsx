@@ -23,4 +23,4 @@ export const loginHeader = {
 };
 
 export const REDIRECT_URI = 'locketupload.spotify://oauth';
-export const VERSION_SKIP_CODEPUSH = 71;
+export const VERSION_SKIP_CODEPUSH = 77;
