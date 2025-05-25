@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-native/no-inline-styles */
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -35,6 +36,8 @@ const ActiveAppScreen: React.FC<ActiveAppScreenProps> = () => {
           key: process.env.KEY_DEMO || '',
         }),
       );
+    } else {
+      handleGetKey();
     }
   }, [dispatch, userEmail]);
 
