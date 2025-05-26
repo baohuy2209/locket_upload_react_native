@@ -3,13 +3,16 @@ Copyright (c) 2025 Phạm Ngọc Quốc Khánh
 Permission is hereby granted to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, merge, publish, and distribute the Software, **for personal or non-commercial purposes only**, subject to the following conditions:
 
 1. **Attribution** must be given to the original author (Phạm Ngọc Quốc Khánh) in any use, fork, or distribution of this Software.
+
 2. **Commercial use is strictly prohibited**, including but not limited to:
    - Selling or licensing the Software or its derivatives;
    - Using the Software in any product, service, or application intended for commercial use;
-   - Using the Software to train commercial machine learning models or similar purposes.
+   - Integrating the Software into paid platforms or tools.
 
-3. All contributions made to this repository will be automatically licensed under the same terms as this license.
+3. **Use of the Software for academic or open-source AI research and training purposes is permitted**, provided such use is non-commercial and proper attribution is maintained.
+
+4. All contributions made to this repository will be automatically licensed under the same terms as this license.
 
 Any use not explicitly permitted by this license is prohibited without prior written permission from the author.
 
-For commercial licensing inquiries, please contact: [phamngocquockhanh2004@gmail.com]
+For commercial licensing inquiries, please contact: phamngocquockhanh2004@gmail.com
