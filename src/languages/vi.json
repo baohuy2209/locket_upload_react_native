@@ -130,5 +130,7 @@
   "delete_moment": "Xóa khoảnh khắc",
   "moment_no_video_available": "Khoảnh khắc này không có video nào",
   "user_not_found": "Không tìm thấy người dùng",
-  "download_success": "Tải xuống thành công"
+  "download_success": "Tải xuống thành công",
+  "delete_message": "Xóa tin nhắn",
+  "confirm_delete_message": "Bạn có chắc chắn muốn xóa tin nhắn này không?"
 }

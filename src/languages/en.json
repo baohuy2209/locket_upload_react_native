@@ -130,5 +130,7 @@
   "delete_moment": "Delete moment",
   "moment_no_video_available": "This moment has no available video",
   "user_not_found": "User not found",
-  "download_success": "Download successful"
+  "download_success": "Download successful",
+  "delete_message": "Delete message",
+  "confirm_delete_message": "Are you sure you want to delete this message?"
 }

@@ -12,7 +12,7 @@ interface ItemMessageProps {
   nextItem?: ChatMessageType;
   item: ChatMessageType;
   sendByMe?: boolean;
-  onLongPress?: (text: string) => void;
+  onLongPress?: (text: ChatMessageType) => void;
 }
 
 const screenWidth = Dimensions.get('window').width;
@@ -89,7 +89,7 @@ const ItemMessage: React.FC<ItemMessageProps> = ({
   const handleLongPress = () => {
     if (onLongPress) {
       hapticFeedback();
-      onLongPress(item.text);
+      onLongPress(item);
     }
   };
 

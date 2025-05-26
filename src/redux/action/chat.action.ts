@@ -148,3 +148,62 @@ export const markReadMessage = createAsyncThunk(
     }
   },
 );
+
+interface DeleteMessageParam {
+  idToken: string;
+  conversation_uid: string;
+  message_uid: string;
+}
+export const deleteMessage = createAsyncThunk(
+  'deleteMessage',
+  async (data: DeleteMessageParam, thunkApi) => {
+    try {
+      const body = {
+        data: {
+          message_uid: data.message_uid,
+          conversation_uid: data.conversation_uid,
+        },
+      };
+      const response = await instanceLocket.post('deleteChatMessage', body, {
+        headers: {
+          Authorization: `Bearer ${data.idToken}`,
+          ...loginHeader,
+        },
+      });
+      console.log(response.data);
+
+      if (response.data?.result?.status === 200) {
+        return {
+          conversation_uid: data.conversation_uid,
+          message_uid: data.message_uid,
+        };
+      } else {
+        thunkApi.dispatch(
+          setMessage({
+            message:
+              response.data?.error?.message || response.data?.result?.errors
+                ? JSON.stringify(
+                    response.data?.error?.message ||
+                      response.data?.result?.error,
+                  )
+                : t('error'),
+            type: t('error'),
+          }),
+        );
+        return thunkApi.rejectWithValue(
+          response.data?.result?.message || t('error'),
+        );
+      }
+    } catch (error: any) {
+      thunkApi.dispatch(
+        setMessage({
+          message: `${JSON.stringify(error?.response?.data) || error.message}`,
+          type: t('error'),
+        }),
+      );
+      return thunkApi.rejectWithValue(
+        error?.response?.data?.error || error.message,
+      );
+    }
+  },
+);

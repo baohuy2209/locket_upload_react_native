@@ -177,6 +177,7 @@ const ChatScreen = () => {
           currentUserId={user?.localId}
           ref={listRef}
           onLoadMore={handleLoadMoreMessages}
+          conversationId={uid}
         />
 
         <View row spread centerV gap-12>

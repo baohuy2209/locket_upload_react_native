@@ -12,19 +12,28 @@ import {Colors, Text, TouchableOpacity} from 'react-native-ui-lib';
 import {t} from '../../languages/i18n';
 import SelectMessageDialog from '../../Dialog/SelectMessageDialog';
 import Clipboard from '@react-native-clipboard/clipboard';
+import DeleteMessageDialog from '../../Dialog/DeleteMessageDialog';
 
 interface Props {
   messages: ChatMessageType[];
   currentUserId?: string;
   ListFooterComponent?: React.ComponentType<any> | React.ReactElement | null;
   onLoadMore?: () => void;
+  conversationId: string;
 }
 
 const MessageList = forwardRef<FlatList<ChatMessageType>, Props>(
-  ({messages, currentUserId, ListFooterComponent, onLoadMore}, ref) => {
+  (
+    {messages, currentUserId, ListFooterComponent, onLoadMore, conversationId},
+    ref,
+  ) => {
     const flatListRef = useRef<FlatList<ChatMessageType>>(null);
     const [isAtBottom, setIsAtBottom] = useState(true);
-    const [messageSelect, setmessageSelect] = useState<string | null>(null);
+    const [messageSelect, setmessageSelect] = useState<ChatMessageType | null>(
+      null,
+    );
+    const [visibleDeleteMessage, setvisibleDeleteMessage] = useState(false);
+    const [visibleSelectMessage, setVisibleSelectMessage] = useState(false);
 
     useImperativeHandle(
       ref,
@@ -38,18 +47,20 @@ const MessageList = forwardRef<FlatList<ChatMessageType>, Props>(
       setIsAtBottom(contentOffset.y <= threshold);
     };
 
-    const handleLongPress = (text: string) => {
-      setmessageSelect(text);
+    const handleLongPress = (message: ChatMessageType) => {
+      setVisibleSelectMessage(true);
+      setmessageSelect(message);
     };
 
     const handleOptionSelect = (value: string) => {
       if (value === 'copy') {
-        // Xử lý sao chép văn bản
-        Clipboard.setString(messageSelect || '');
-        // Thông báo sao chép thành công
+        Clipboard.setString(messageSelect?.text || '');
         ToastAndroid.show(t('copy_success'), ToastAndroid.SHORT);
+      } else if (value === 'delete') {
+        setvisibleDeleteMessage(true);
+      } else {
+        setmessageSelect(null);
       }
-      setmessageSelect(null);
     };
 
     return (
@@ -96,10 +107,21 @@ const MessageList = forwardRef<FlatList<ChatMessageType>, Props>(
           </TouchableOpacity>
         )}
         <SelectMessageDialog
-          isVisible={messageSelect !== null}
-          onDismiss={() => setmessageSelect(null)}
+          isVisible={visibleSelectMessage}
+          onDismiss={() => setVisibleSelectMessage(false)}
           onSelect={handleOptionSelect}
-          option={options}
+          option={options.filter(option => {
+            if (option.value === 'delete') {
+              return messageSelect?.sender === currentUserId;
+            }
+            return true;
+          })}
+        />
+        <DeleteMessageDialog
+          visible={visibleDeleteMessage}
+          message={messageSelect}
+          onDismiss={() => setvisibleDeleteMessage(false)}
+          conversationId={conversationId}
         />
       </>
     );
@@ -108,8 +130,8 @@ const MessageList = forwardRef<FlatList<ChatMessageType>, Props>(
 
 const options = [
   {title: t('copy'), value: 'copy'},
+  {title: t('delete'), value: 'delete', color: Colors.red30},
   {title: t('cancel'), value: 'cancel'},
-  // {title: t('delete'), value: 'delete', color: Colors.red30},
 ];
 
 MessageList.displayName = 'MessageList';

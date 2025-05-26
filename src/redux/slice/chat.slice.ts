@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {ChatMessageType, ListChatType} from '../../models/chat.model';
-import {getMessage, getMessageWith} from '../action/chat.action';
+import {deleteMessage, getMessage, getMessageWith} from '../action/chat.action';
 
 interface InitialState {
   listChat: {
@@ -195,6 +195,13 @@ const chatSlice = createSlice({
       )
       .addCase(getMessageWith.rejected, state => {
         state.isLoadChat = false;
+      })
+
+      .addCase(deleteMessage.fulfilled, (state, action) => {
+        const {conversation_uid, message_uid} = action.payload;
+        if (state.chat[conversation_uid]) {
+          delete state.chat[conversation_uid][message_uid];
+        }
       });
   },
 });
