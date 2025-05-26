@@ -9,11 +9,11 @@
     "start": "react-native start",
     "test": "jest",
     "postinstall": "cd android && ./gradlew :app:downloadAar",
-    "build-android": "./build-android.sh",
+    "build-android": "./scripts/build-android.sh",
     "build-android-windows": "cd android && .\\gradlew assembleRelease && adb install .\\app\\build\\outputs\\apk\\release\\app-release.apk && cd ..",
-    "deploy-with_codepush": "./build-deploy-codepush.sh",
-    "deploy-with_codepush-old": "./build-deploy-codepush-old.sh",
-    "deploy-android": "./build-deploy.sh"
+    "deploy-with_codepush": "./scripts/build-deploy-codepush.sh",
+    "deploy-with_codepush-old": "./scripts/build-deploy-codepush-old.sh",
+    "deploy-android": "./scripts/build-deploy.sh"
   },
   "dependencies": {
     "@notifee/react-native": "^9.1.8",
