@@ -8,8 +8,10 @@ import {setOldPosts} from '../slice/oldPosts.slice';
 import {t} from '../../languages/i18n';
 import {Post} from '../../models/post.model';
 import {cleanObject} from '../../util/cleanObject';
-import {instanceMyServer} from '../../util/axios_instance';
-import {setActiveKey} from '../slice/setting.slice';
+import {instanceLocket, instanceMyServer} from '../../util/axios_instance';
+import {removeActiveKeyEmail} from '../slice/setting.slice';
+import {decodeJwt} from '../../util/convert';
+import {loginHeader} from '../../util/constrain';
 
 interface DataParam {
   token: string;
@@ -37,7 +39,8 @@ export const getOldPosts = createAsyncThunk(
       };
     } catch (error: any) {
       if (error?.response?.status === 401) {
-        thunkApi.dispatch(setActiveKey(null));
+        const email = decodeJwt(data.token)?.email;
+        thunkApi.dispatch(removeActiveKeyEmail(email));
       }
       thunkApi.dispatch(
         setMessage({
@@ -87,6 +90,115 @@ export const getReaction = createAsyncThunk(
       thunkApi.dispatch(
         setMessage({
           message: `${JSON.stringify(error?.response?.data) || error.message}`,
+          type: t('error'),
+        }),
+      );
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+interface DeleteMomentParam {
+  momentId: string;
+  ownerId: string;
+  token: string;
+}
+
+export const deleteMoment = createAsyncThunk(
+  'deleteMoment',
+  async (data: DeleteMomentParam, thunkApi) => {
+    try {
+      const user = decodeJwt(data.token) as User;
+      if (!user) {
+        thunkApi.dispatch(
+          setMessage({
+            message: t('user_not_found'),
+            type: t('error'),
+          }),
+        );
+        return thunkApi.rejectWithValue('User not found');
+      }
+      const bodyRequest = {
+        data: {
+          moment_uid: data.momentId,
+          owner_uid: data.ownerId,
+          delete_globally: data.ownerId === user.localId,
+        },
+      };
+      await instanceLocket.post('/deleteMomentV2', bodyRequest, {
+        headers: {
+          ...loginHeader,
+          Authorization: `Bearer ${data.token}`,
+        },
+      });
+      return data.momentId;
+    } catch (error: any) {
+      thunkApi.dispatch(
+        setMessage({
+          message: `${JSON.stringify(error?.response?.data) || error.message}`,
+          type: t('error'),
+        }),
+      );
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+import RNFS from 'react-native-fs';
+import {ToastAndroid} from 'react-native';
+import {User} from '../../models/user.model';
+export const downloadImage = createAsyncThunk(
+  'downloadImage',
+  async (uri: string, thunkApi) => {
+    const downloadDest = `${RNFS.DownloadDirectoryPath}/${Date.now()}.jpg`;
+    try {
+      await RNFS.downloadFile({
+        fromUrl: uri,
+        toFile: downloadDest,
+        background: true,
+        discretionary: true,
+      });
+      ToastAndroid.show(t('download_success'), ToastAndroid.SHORT);
+      return downloadDest;
+    } catch (error: any) {
+      thunkApi.dispatch(
+        setMessage({
+          message: `Download failed: ${JSON.stringify(
+            error.response?.data || error.message,
+          )}`,
+          type: t('error'),
+        }),
+      );
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+export const downloadVideo = createAsyncThunk(
+  'download video',
+  async (uri: string, thunkApi) => {
+    if (!uri) {
+      return null;
+    }
+
+    //lưu vào thư mục download của thiết bị
+    const downloadDest = `${RNFS.DownloadDirectoryPath}/${Date.now()}.mp4`;
+    //sử dụng axios để tải video về
+    try {
+      await RNFS.downloadFile({
+        fromUrl: uri,
+        toFile: downloadDest,
+        background: true,
+        discretionary: true,
+      });
+      ToastAndroid.show(t('download_success'), ToastAndroid.SHORT);
+      return downloadDest;
+    } catch (error: any) {
+      thunkApi.dispatch(
+        setMessage({
+          message: `Download failed: ${JSON.stringify(
+            error.response?.data || error.message,
+          )}`,
           type: t('error'),
         }),
       );

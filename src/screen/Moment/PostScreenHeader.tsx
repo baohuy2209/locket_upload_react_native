@@ -1,8 +1,12 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {Friend} from '../../models/friend.model';
 import Header from '../../components/Header';
 import FriendPicker from './FriendPicker';
-import {Colors} from 'react-native-ui-lib';
+import {Colors, Icon, TouchableOpacity} from 'react-native-ui-lib';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux/store';
+import {ActivityIndicator} from 'react-native';
 
 interface PostScreenHeaderProps {
   friends: {
@@ -23,7 +27,9 @@ const PostScreenHeader: React.FC<PostScreenHeaderProps> = ({
   leftIconAction,
   rightIconAction,
 }) => {
-  //chuyển object friend thành mảng
+  const {isLoadingActionMoment} = useSelector(
+    (state: RootState) => state.oldPosts,
+  );
   return (
     <Header
       customCenter={
@@ -36,8 +42,23 @@ const PostScreenHeader: React.FC<PostScreenHeaderProps> = ({
       }
       backgroundColor={Colors.transparent}
       leftIconAction={leftIconAction}
-      rightIcon="ic_message"
-      rightIconAction={rightIconAction}
+      customRight={
+        isLoadingActionMoment ? (
+          <ActivityIndicator size="small" color={Colors.white} />
+        ) : (
+          rightIconAction && (
+            <TouchableOpacity
+              onPress={rightIconAction}
+              style={{
+                borderRadius: 8,
+                padding: 6,
+                backgroundColor: Colors.grey20,
+              }}>
+              <Icon assetName="ic_action" size={24} tintColor={Colors.grey40} />
+            </TouchableOpacity>
+          )
+        )
+      }
     />
   );
 };

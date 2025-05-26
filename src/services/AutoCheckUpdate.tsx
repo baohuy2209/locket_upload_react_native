@@ -40,11 +40,10 @@ const AutoCheckUpdate: React.FC = () => {
           setUpdateInfo('UPDATE_AVAILABLE');
           setDescription(update.description || '');
         }
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
         dispatch(
           setMessage({
-            message: JSON.stringify(error),
+            message: JSON.stringify(error.message),
             type: t('error'),
           }),
         );

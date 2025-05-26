@@ -2,6 +2,9 @@ import {createSlice} from '@reduxjs/toolkit';
 import {Post, Reaction} from '../../models/post.model';
 import {
   cleanOldPostAsync,
+  deleteMoment,
+  downloadImage,
+  downloadVideo,
   getOldPosts,
   getReaction,
 } from '../action/getOldPost.action';
@@ -13,6 +16,7 @@ interface InitialState {
   isLoadPosts: boolean;
   deleted: string[];
   isLoadingReaction: boolean;
+  isLoadingActionMoment: boolean;
   reaction?: {
     [key: string]: Reaction[];
   };
@@ -30,12 +34,13 @@ const oldPostsSlice = createSlice({
   name: 'oldPosts',
   initialState: {
     posts: [],
-    isLoadPosts: false,
     deleted: [],
     reaction: {},
-    isLoadingReaction: false,
     response: null,
     filterFriendShow: null,
+    isLoadPosts: false,
+    isLoadingReaction: false,
+    isLoadingActionMoment: false,
   } as InitialState,
   reducers: {
     setOldPosts(state, action) {
@@ -129,6 +134,38 @@ const oldPostsSlice = createSlice({
       })
       .addCase(getReaction.rejected, state => {
         state.isLoadingReaction = false;
+      })
+
+      .addCase(deleteMoment.pending, state => {
+        state.isLoadPosts = true;
+      })
+      .addCase(deleteMoment.fulfilled, (state, action) => {
+        const momentId = action.payload;
+        state.isLoadPosts = false;
+        state.posts = state.posts.filter(post => post.id !== momentId);
+      })
+      .addCase(deleteMoment.rejected, state => {
+        state.isLoadPosts = false;
+      })
+
+      // Handle download media actions
+      .addCase(downloadImage.pending, state => {
+        state.isLoadingActionMoment = true;
+      })
+      .addCase(downloadImage.fulfilled, state => {
+        state.isLoadingActionMoment = false;
+      })
+      .addCase(downloadImage.rejected, state => {
+        state.isLoadingActionMoment = false;
+      })
+      .addCase(downloadVideo.pending, state => {
+        state.isLoadingActionMoment = true;
+      })
+      .addCase(downloadVideo.fulfilled, state => {
+        state.isLoadingActionMoment = false;
+      })
+      .addCase(downloadVideo.rejected, state => {
+        state.isLoadingActionMoment = false;
       });
   },
 });

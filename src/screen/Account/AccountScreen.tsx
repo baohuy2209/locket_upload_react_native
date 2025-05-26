@@ -105,12 +105,10 @@ const AccountScreen = () => {
         setUpdateInfo('UPDATE_AVAILABLE');
         setDecriptionUpdate(update?.description);
       }
-    } catch (error) {
-      console.log(error);
-
+    } catch (error: any) {
       dispatch(
         setMessage({
-          message: JSON.stringify(error),
+          message: JSON.stringify(error.message),
           type: t('error'),
         }),
       );

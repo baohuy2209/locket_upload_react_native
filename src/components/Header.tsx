@@ -20,6 +20,7 @@ interface HeaderProps {
   //custom component
   backgroundColor?: string;
   customCenter?: React.ReactNode;
+  customRight?: React.ReactNode;
 }
 
 const Header = ({
@@ -27,6 +28,8 @@ const Header = ({
   customCenter,
   rightIcon,
   backgroundColor,
+  customRight,
+
   rightIconAction,
   leftIconAction,
 }: HeaderProps) => {
@@ -67,7 +70,9 @@ const Header = ({
           {title}
         </Text>
       )}
-      {rightIcon ? (
+      {customRight ? (
+        customRight
+      ) : rightIcon ? (
         <TouchableOpacity onPress={rightIconAction} padding-6>
           <Icon
             assetGroup="icons"

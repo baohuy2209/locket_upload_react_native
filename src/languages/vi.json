@@ -124,5 +124,11 @@
   "active_key": "Khóa kích hoạt",
   "active_key_description": "Nhập mã kích hoạt cho email",
   "get_acitve_key": "Nhận khóa kích hoạt",
-  "password": "Mật khẩu"
+  "password": "Mật khẩu",
+  "download_image": "Tải ảnh xuống",
+  "download_video": "Tải video xuống",
+  "delete_moment": "Xóa khoảnh khắc",
+  "moment_no_video_available": "Khoảnh khắc này không có video nào",
+  "user_not_found": "Không tìm thấy người dùng",
+  "download_success": "Tải xuống thành công"
 }

@@ -13,6 +13,7 @@ import {getReaction} from '../../../redux/action/getOldPost.action';
 import {t} from '../../../languages/i18n';
 import ReactionDialog from '../../../Dialog/ReactionDialog';
 import {ActivityIndicator, StyleSheet} from 'react-native';
+import CustomAvatar from '../../../components/Avatar';
 
 interface ReactionProps {
   momentId: string;
@@ -58,21 +59,38 @@ const mapFriendsWithReactions = (
     .filter(Boolean) as FriendReaction[];
 };
 
-const ReactionAvatars = ({data}: {data: FriendReaction[]}) => (
-  <View row>
-    {data.map((item, index) => (
-      <View
-        key={item.uid}
-        style={[{marginLeft: -8}, index === 0 && {marginLeft: 0}]}>
-        <Avatar
-          source={{uri: item.image}}
-          size={30}
-          imageStyle={styles.avatarImage}
-        />
-      </View>
-    ))}
-  </View>
-);
+const ReactionAvatars = ({data}: {data: FriendReaction[]}) => {
+  const MAX_DISPLAY = 5;
+  const shouldTruncate = data.length > MAX_DISPLAY + 1;
+  const displayedData = shouldTruncate ? data.slice(0, MAX_DISPLAY) : data;
+
+  return (
+    <View row>
+      {displayedData.map((item, index) => (
+        <View
+          key={item.uid}
+          style={[{marginLeft: -8}, index === 0 && {marginLeft: 0}]}>
+          <Avatar
+            source={{uri: item.image}}
+            size={30}
+            imageStyle={styles.avatarImage}
+          />
+        </View>
+      ))}
+
+      {shouldTruncate && (
+        <View
+          style={{
+            marginLeft: -8,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <CustomAvatar size={30} text={`+${data.length - MAX_DISPLAY}`} />
+        </View>
+      )}
+    </View>
+  );
+};
 
 const LoadingReaction = () => (
   <View style={styles.container} row center bg-grey10 padding-12>

@@ -72,12 +72,11 @@ const RootNavigation = () => {
   const isLoggedIn = useSelector((state: RootState) => state.user);
   const userEmail = isLoggedIn.user?.email || 'notfound';
   const {activeKey} = useSelector((state: RootState) => state.setting);
-  const isActiveApp = activeKey[userEmail];
   return (
     <>
       <NavigationContainer>
         {isLoggedIn.user ? (
-          !isActiveApp ? (
+          !activeKey[userEmail] ? (
             <ActiveKeyNavigator />
           ) : (
             <HomeNavigator />

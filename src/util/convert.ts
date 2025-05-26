@@ -51,12 +51,20 @@ export const getYYYYMMDD = () => {
   return `${year}${month}${day}`;
 };
 
+import {decode as atob} from 'base-64';
 export function decodeJwt(token: string): Record<string, any> | null {
   try {
     const [, payloadBase64] = token.split('.');
 
     const padded = payloadBase64.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonStr = decodeURIComponent(escape(atob(padded))); // <-- fix unicode
+    const jsonStr = decodeURIComponent(
+      Array.prototype.map
+        .call(
+          atob(padded),
+          c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2),
+        )
+        .join(''),
+    );
     return JSON.parse(jsonStr);
   } catch (e) {
     console.error('Failed to decode JWT:', e);

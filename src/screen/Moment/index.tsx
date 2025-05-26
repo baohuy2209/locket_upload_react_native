@@ -33,6 +33,7 @@ import {sendMessage} from '../../redux/action/chat.action';
 import {filterFriends} from '../../util/friends';
 import {nav} from '../../navigation/navName';
 import {navigationTo} from '../../navigation/HomeNavigation';
+import OptionMomentDialog from '../../Dialog/OptionMomentDialog';
 
 interface PostScreenProps {
   initialIndex?: number;
@@ -53,6 +54,7 @@ const PostScreen: React.FC<PostScreenProps> = ({
   const [isViewerVisible, setIsViewerVisible] = useState<boolean>(false);
   const [indexToView, setIndexToView] = useState<number>(initialIndex);
   const [isFocusReaction, setIsFocusReaction] = useState(false);
+  const [visibleOptionMoment, setVisibleOptionMoment] = useState(false);
   const [selectedIndexInModal, setSelectedIndexInModal] =
     useState<number>(initialIndex);
 
@@ -316,13 +318,19 @@ const PostScreen: React.FC<PostScreenProps> = ({
                   setIsViewerVisible(false);
                 }}
                 rightIconAction={() => {
-                  setIsViewerVisible(false);
                   hapticFeedback();
-                  navigationTo(nav.chatList);
+                  setVisibleOptionMoment(true);
                 }}
               />
             </View>
           </View>
+          <OptionMomentDialog
+            visible={visibleOptionMoment}
+            onDismiss={() => {
+              setVisibleOptionMoment(false);
+            }}
+            moment={listPostByFilter[selectedIndexInModal]}
+          />
         </ImageBackground>
       </Modal>
     </>

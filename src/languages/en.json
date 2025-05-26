@@ -124,5 +124,11 @@
   "active_key": "Activation Key",
   "active_key_description": "Enter the activation code for your email",
   "get_acitve_key": "Get Activation Key",
-  "password": "Password"
+  "password": "Password",
+  "download_image": "Download image",
+  "download_video": "Download video",
+  "delete_moment": "Delete moment",
+  "moment_no_video_available": "This moment has no available video",
+  "user_not_found": "User not found",
+  "download_success": "Download successful"
 }

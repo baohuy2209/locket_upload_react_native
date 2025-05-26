@@ -78,6 +78,13 @@ const settingSlice = createSlice({
         state.activeKey = {};
       }
     },
+
+    removeActiveKeyEmail(state, action: PayloadAction<string>) {
+      const email = action.payload;
+      if (state.activeKey[email]) {
+        delete state.activeKey[email];
+      }
+    },
   },
   extraReducers: builder => {
     builder
@@ -109,6 +116,7 @@ export const {
   setSetting,
   setShowDonate,
   setUsingSpotifyMod,
+  removeActiveKeyEmail,
   setActiveKey,
 } = settingSlice.actions;
 
