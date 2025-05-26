@@ -1,10 +1,9 @@
-/* eslint-disable react-native/no-inline-styles */
-import {Colors, Dialog, Typography, View} from 'react-native-ui-lib';
+import {Colors, View} from 'react-native-ui-lib';
 import React, {useEffect, useState} from 'react';
-import CustomDialog from './CustomDialog';
 import MainButton from '../components/MainButton';
 import MainInput from '../components/MainInput';
 import {t} from '../languages/i18n';
+import MainDialog from './MainDialog';
 
 interface EditTextDialogProps {
   value: string;
@@ -40,30 +39,7 @@ const EditTextDialog = ({
   }, [value, value2]);
 
   return (
-    <CustomDialog
-      visible={visible}
-      onDismiss={onDismiss}
-      bottom
-      titleStyle={{
-        color: 'white',
-        ...Typography.text60BL,
-        textAlign: 'left',
-        width: '100%',
-      }}
-      title={label}
-      panDirection={Dialog.directions.DOWN}
-      containerStyle={{
-        backgroundColor: 'black',
-        borderWidth: 1,
-        borderBottomWidth: 0,
-        borderRadiusBottomLeft: 0,
-        borderRadiusBottomRight: 0,
-        borderColor: Colors.grey20,
-        gap: 4,
-        padding: 12,
-        borderRadius: 10,
-        paddingBottom: 24,
-      }}>
+    <MainDialog visible={visible} onDismiss={onDismiss} title={label}>
       <View gap-12>
         <MainInput
           value={text}
@@ -87,7 +63,7 @@ const EditTextDialog = ({
           isLoading={isLoading}
         />
       </View>
-    </CustomDialog>
+    </MainDialog>
   );
 };
 

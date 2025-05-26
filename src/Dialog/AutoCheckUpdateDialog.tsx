@@ -1,17 +1,9 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, {useMemo} from 'react';
-import {
-  View,
-  Dialog,
-  Typography,
-  Colors,
-  ProgressBar,
-  Text,
-} from 'react-native-ui-lib';
-import CustomDialog from './CustomDialog';
+import {View, Colors, ProgressBar, Text} from 'react-native-ui-lib';
 import MainButton from '../components/MainButton';
 import {t} from '../languages/i18n';
 import {UpdateInfoType} from '../models/update.model';
+import MainDialog from './MainDialog';
 
 interface AutoCheckUpdateDialogProps {
   isVisible: boolean;
@@ -146,32 +138,7 @@ const AutoCheckUpdateDialog = ({
     : updateState.UP_TO_DATE;
 
   return (
-    <CustomDialog
-      visible={isVisible}
-      panDirection={Dialog.directions.DOWN}
-      onDismiss={onPostpone}
-      titleStyle={{
-        color: 'white',
-        ...Typography.text60BL,
-        textAlign: 'center',
-        width: '100%',
-      }}
-      bottom
-      width={'98%'}
-      maxHeight={'100%'}
-      containerStyle={{
-        backgroundColor: 'black',
-        borderWidth: 1,
-        borderBottomWidth: 0,
-        borderRadiusBottomLeft: 0,
-        borderRadiusBottomRight: 0,
-        borderColor: Colors.grey20,
-        gap: 4,
-        padding: 12,
-        borderRadius: 10,
-        paddingBottom: 24,
-      }}
-      title={message}>
+    <MainDialog visible={isVisible} onDismiss={onPostpone} title={message}>
       <View bg-black padding-20 paddingT-0>
         {decriptionUpdate && (
           <View paddingB-12>
@@ -193,7 +160,7 @@ const AutoCheckUpdateDialog = ({
           </View>
         )}
       </View>
-    </CustomDialog>
+    </MainDialog>
   );
 };
 

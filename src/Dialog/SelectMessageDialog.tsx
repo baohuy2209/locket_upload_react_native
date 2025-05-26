@@ -1,13 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  Colors,
-  Dialog,
-  Typography,
-} from 'react-native-ui-lib';
-import CustomDialog from './CustomDialog';
+import {Text, TouchableOpacity, Colors, Typography} from 'react-native-ui-lib';
+import MainDialog from './MainDialog';
 
 interface SelectMessageDialogProps {
   option: {
@@ -27,30 +21,14 @@ const SelectMessageDialog: React.FC<SelectMessageDialogProps> = ({
   onDismiss,
 }) => {
   return (
-    <CustomDialog
+    <MainDialog
       visible={isVisible}
-      panDirection={Dialog.directions.DOWN}
       onDismiss={onDismiss}
       titleStyle={{
         color: 'white',
         ...Typography.text60BL,
         textAlign: 'center',
         width: '100%',
-      }}
-      bottom
-      width={'98%'}
-      maxHeight={'100%'}
-      containerStyle={{
-        backgroundColor: 'black',
-        borderWidth: 1,
-        borderBottomWidth: 0,
-        borderRadiusBottomLeft: 0,
-        borderRadiusBottomRight: 0,
-        borderColor: Colors.grey20,
-        gap: 4,
-        padding: 12,
-        borderRadius: 10,
-        paddingBottom: 24,
       }}>
       {option.map((item, index) => (
         <TouchableOpacity
@@ -69,7 +47,7 @@ const SelectMessageDialog: React.FC<SelectMessageDialogProps> = ({
           </Text>
         </TouchableOpacity>
       ))}
-    </CustomDialog>
+    </MainDialog>
   );
 };
 

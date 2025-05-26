@@ -1,19 +1,11 @@
-/* eslint-disable react-native/no-inline-styles */
-import {
-  Text,
-  Button,
-  Colors,
-  Typography,
-  Dialog,
-  ProgressBar,
-} from 'react-native-ui-lib';
+import {Text, Button, Colors, ProgressBar} from 'react-native-ui-lib';
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {clearMessage, setTask} from '../redux/slice/message.slice';
-import CustomDialog from './CustomDialog';
 import {ScrollView} from 'react-native';
 import {AppDispatch, RootState} from '../redux/store';
 import {t} from '../languages/i18n';
+import MainDialog from './MainDialog';
 
 const MessageDialog = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,33 +17,10 @@ const MessageDialog = () => {
     dispatch(clearMessage());
   };
   return (
-    <CustomDialog
+    <MainDialog
       visible={!!message}
       onDismiss={handleClearMessage}
-      title={type?.toUpperCase() || ''}
-      panDirection={Dialog.directions.DOWN}
-      titleStyle={{
-        color: 'white',
-        ...Typography.text60BL,
-        textAlign: 'left',
-        width: '100%',
-        lineHeight: 36,
-      }}
-      bottom
-      width={'98%'}
-      maxHeight={'100%'}
-      containerStyle={{
-        backgroundColor: 'black',
-        borderWidth: 1,
-        borderBottomWidth: 0,
-        borderRadiusBottomLeft: 0,
-        borderRadiusBottomRight: 0,
-        borderColor: Colors.grey20,
-        gap: 4,
-        padding: 12,
-        borderRadius: 10,
-        paddingBottom: 24,
-      }}>
+      title={type?.toUpperCase() || ''}>
       <ScrollView>
         <Text white text70BL>
           {message}
@@ -85,7 +54,7 @@ const MessageDialog = () => {
           backgroundColor={Colors.red30}
         />
       )}
-    </CustomDialog>
+    </MainDialog>
   );
 };
 

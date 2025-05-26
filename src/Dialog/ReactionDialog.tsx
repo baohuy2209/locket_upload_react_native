@@ -1,14 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {
-  View,
-  Text,
-  Dialog,
-  Typography,
-  Colors,
-  Avatar,
-} from 'react-native-ui-lib';
-import CustomDialog from './CustomDialog';
+import {View, Text, Typography, Colors, Avatar} from 'react-native-ui-lib';
+import MainDialog from './MainDialog';
 
 interface Reaction {
   uid: string;
@@ -29,31 +22,7 @@ const ReactionDialog: React.FC<ReactionDialogProps> = ({
   reaction,
 }) => {
   return (
-    <CustomDialog
-      visible={visible}
-      onDismiss={onDismiss}
-      panDirection={Dialog.directions.DOWN}
-      titleStyle={{
-        color: 'white',
-        ...Typography.text60BL,
-        textAlign: 'left',
-        width: '100%',
-      }}
-      bottom
-      width={'98%'}
-      containerStyle={{
-        backgroundColor: 'black',
-        borderWidth: 1,
-        borderBottomWidth: 0,
-        borderRadiusBottomLeft: 0,
-        borderRadiusBottomRight: 0,
-        borderColor: Colors.grey20,
-        gap: 4,
-        padding: 12,
-        paddingBottom: 24,
-        borderRadius: 10,
-        overflow: 'hidden',
-      }}>
+    <MainDialog visible={visible} onDismiss={onDismiss}>
       {reaction.map((item, index) => (
         <View key={index} row centerV spread width={'100%'} marginT-12>
           <View row center>
@@ -76,7 +45,7 @@ const ReactionDialog: React.FC<ReactionDialogProps> = ({
           </Text>
         </View>
       ))}
-    </CustomDialog>
+    </MainDialog>
   );
 };
 

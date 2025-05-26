@@ -2,14 +2,11 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   View,
-  Dialog,
-  Typography,
   Colors,
   Text,
   TouchableOpacity,
   ColorSwatch,
 } from 'react-native-ui-lib';
-import CustomDialog from './CustomDialog';
 import LinearGradient from 'react-native-linear-gradient';
 import {ColorDefault, ColorsSelect} from '../util/colors';
 import {PostStyle} from '../models/setting.model';
@@ -17,6 +14,7 @@ import MainButton from '../components/MainButton';
 import {FlatList} from 'react-native';
 import {t} from '../languages/i18n';
 import {hapticFeedback} from '../util/haptic';
+import MainDialog from './MainDialog';
 
 interface SelectColorDialogProps {
   visible: boolean;
@@ -84,31 +82,7 @@ const SelectColorDialog: React.FC<SelectColorDialogProps> = ({
   }, [indexColor]);
 
   return (
-    <CustomDialog
-      visible={visible}
-      onDismiss={onDismiss}
-      panDirection={Dialog.directions.DOWN}
-      titleStyle={{
-        color: 'white',
-        ...Typography.text60BL,
-        textAlign: 'left',
-        width: '100%',
-      }}
-      bottom
-      width={'98%'}
-      containerStyle={{
-        backgroundColor: 'black',
-        borderWidth: 1,
-        borderBottomWidth: 0,
-        borderRadiusBottomLeft: 0,
-        borderRadiusBottomRight: 0,
-        borderColor: Colors.grey20,
-        gap: 4,
-        padding: 12,
-        paddingBottom: 24,
-        borderRadius: 10,
-        overflow: 'hidden',
-      }}>
+    <MainDialog visible={visible} onDismiss={onDismiss}>
       <View>
         <View row spread>
           <View gap-8>
@@ -167,7 +141,7 @@ const SelectColorDialog: React.FC<SelectColorDialogProps> = ({
 
         <MainButton label={t('done')} onPress={onDismiss} />
       </View>
-    </CustomDialog>
+    </MainDialog>
   );
 };
 

@@ -1,21 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
-import {
-  Checkbox,
-  Colors,
-  Dialog,
-  Image,
-  Text,
-  Typography,
-  View,
-} from 'react-native-ui-lib';
+import {Checkbox, Colors, Image, Text, View} from 'react-native-ui-lib';
 import React, {useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {clearMessage} from '../redux/slice/message.slice';
-import CustomDialog from './CustomDialog';
 import {AppDispatch} from '../redux/store';
 import Video from 'react-native-video';
 import MainButton from '../components/MainButton';
 import {t} from '../languages/i18n';
+import MainDialog from './MainDialog';
 
 interface GuideDialogProps {
   visible: boolean;
@@ -52,32 +44,10 @@ const GuideDialog: React.FC<GuideDialogProps> = ({
     dispatch(clearMessage());
   };
   return (
-    <CustomDialog
+    <MainDialog
       visible={localVisible}
       onDismiss={handleClearMessage}
-      panDirection={Dialog.directions.DOWN}
-      bottom
-      width={'98%'}
-      maxHeight={'100%'}
-      title={label}
-      titleStyle={{
-        color: 'white',
-        ...Typography.text60BL,
-        textAlign: 'left',
-        width: '100%',
-      }}
-      containerStyle={{
-        backgroundColor: 'black',
-        borderWidth: 1,
-        borderBottomWidth: 0,
-        borderRadiusBottomLeft: 0,
-        borderRadiusBottomRight: 0,
-        borderColor: Colors.grey20,
-        gap: 4,
-        padding: 12,
-        borderRadius: 10,
-        paddingBottom: 24,
-      }}>
+      title={label}>
       {decription && (
         <Text text text80BL padding-8>
           {decription}
@@ -114,7 +84,7 @@ const GuideDialog: React.FC<GuideDialogProps> = ({
         />
         <MainButton label={t('understood')} onPress={handlePress} />
       </View>
-    </CustomDialog>
+    </MainDialog>
   );
 };
 
