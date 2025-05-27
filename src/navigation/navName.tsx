@@ -4,7 +4,7 @@ export const nav = {
   resetPassword: 'resetPassword',
   accountInfo: 'accountInfo',
   crop: 'crop',
-  setting: 'setting',
+  friend: 'friend',
   camera: 'camera',
   posts: 'posts',
   selectIcon: 'selectIcon',

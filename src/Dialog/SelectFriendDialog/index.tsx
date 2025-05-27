@@ -10,7 +10,7 @@ import {
   setOptionSend,
   setSelectedFriend,
 } from '../../redux/slice/friends.slice';
-import {getFriends} from '../../redux/action/getFriend.action';
+import {getFriends} from '../../redux/action/friend.action';
 
 import FriendOptionList from './FriendOptionList';
 import FriendAvatarList from './FriendAvatarList';

@@ -12,7 +12,6 @@ import LoginScreen from '../screen/LoginScreen';
 import HomeScreen from '../screen/Home';
 import AccountScreen from '../screen/Account/AccountScreen';
 import CropImageScreen from '../screen/CropImageScreen';
-import SettingScreen from '../screen/Settings/SettingScreen';
 import CameraScreen from '../screen/Camera/CameraScreen';
 import PostScreen from '../screen/Moment';
 import MessageDialog from '../Dialog/MessageDialog';
@@ -23,6 +22,7 @@ import {OnOpenAppService} from '../services/OnOpenApp';
 import DonateDialog from '../Dialog/DonateDialog';
 import LocalNoti from '../services/LocalNoti';
 import ActiveAppDialog from '../screen/ActiveAppScreen';
+import FriendScreen from '../screen/Friend';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,11 +48,11 @@ const HomeNavigator = () => {
         <Stack.Screen name={nav.home} component={HomeScreen} />
         <Stack.Screen name={nav.accountInfo} component={AccountScreen} />
         <Stack.Screen name={nav.crop} component={CropImageScreen} />
-        <Stack.Screen name={nav.setting} component={SettingScreen} />
         <Stack.Screen name={nav.camera} component={CameraScreen} />
         <Stack.Screen name={nav.posts} component={PostScreen} />
         <Stack.Screen name={nav.chat} component={ChatScreen} />
         <Stack.Screen name={nav.chatList} component={ListChat} />
+        <Stack.Screen name={nav.friend} component={FriendScreen} />
       </Stack.Navigator>
       <OnOpenAppService />
       <LocalNoti />

@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {handleNotificationClick} from './Notification';
 import {getAccountInfo, getToken} from '../redux/action/user.action';
 import {AppDispatch, RootState} from '../redux/store';
-import {getFriends} from '../redux/action/getFriend.action';
+import {getFriends} from '../redux/action/friend.action';
 import {getApp} from '@react-native-firebase/app';
 import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import {cleanOldPostAsync} from '../redux/action/getOldPost.action';

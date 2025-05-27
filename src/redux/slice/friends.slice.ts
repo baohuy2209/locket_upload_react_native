@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {getFriends} from '../action/getFriend.action';
+import {getFriends} from '../action/friend.action';
 import {Friend, OptionSend} from '../../models/friend.model';
 
 interface InitialState {

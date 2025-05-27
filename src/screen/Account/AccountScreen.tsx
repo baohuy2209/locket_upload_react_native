@@ -1,11 +1,10 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {Colors, Icon, Text, TouchableOpacity, View} from 'react-native-ui-lib';
+import {Colors, Text, View} from 'react-native-ui-lib';
 import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {Linking, RefreshControl, ScrollView} from 'react-native';
-import codePush from 'react-native-code-push';
-import {checkUpdateApk, checkVersionCodePush} from '../../util/update';
+import {Linking, RefreshControl, ScrollView, ToastAndroid} from 'react-native';
+import RNFS from 'react-native-fs';
 
 import {
   // enableLocketGold,
@@ -15,26 +14,44 @@ import {
 import EditTextDialog from '../../Dialog/EditTextDialog';
 import Header from '../../components/Header';
 import UpdatePopup from '../../Dialog/UpdatePopup';
-import {
-  CODEPUSH_DEPLOYMENTKEY,
-  getStatusFromCodePush,
-} from '../../util/codepush';
-import MainButton from '../../components/MainButton';
-import {setMessage} from '../../redux/slice/message.slice';
 import UserInfo from '../../components/UserInfo';
 import {useRoute} from '@react-navigation/native';
-import {nav} from '../../navigation/navName';
 import {AppDispatch, RootState} from '../../redux/store';
-import ModalImageViewBlur from './ModalImageViewBlur';
+import ModalImageViewBlur from './components/ModalImageViewBlur';
 import {t} from '../../languages/i18n';
-import {UpdateInfoType} from '../../models/update.model';
-import {hapticFeedback} from '../../util/haptic';
+import {
+  setOptionFriend,
+  setShowDonate,
+  setTrySoftwareEncode,
+  setUnlimitedTrimVideo,
+} from '../../redux/slice/setting.slice';
+import {clearTokenData} from '../../redux/slice/spotify.slice';
+import {deleteAllMp4Files} from '../../util/uploadVideo';
+import {clearPostMoment} from '../../redux/slice/postMoment.slice';
+import {TextSwitch} from '../../components/TextSwitch';
+import {setLanguage} from '../../redux/slice/language.slice';
+import {Language} from '../../models/language.model';
+import {logout} from '../../redux/slice/user.slice';
+import {setOldPosts} from '../../redux/slice/oldPosts.slice';
+import {setFriends} from '../../redux/slice/friends.slice';
+import {clearListChat} from '../../redux/slice/chat.slice';
+import {getSocket} from '../../services/Chat';
+import ItemSwitch from './components/ItemSwitch';
+import ItemButton from './components/ItemButton';
+import SocialLinks from './components/SocialLinks';
+import {useCodePushUpdate} from '../../hooks/useCodePushUpdate';
 import {navigationTo} from '../../navigation/HomeNavigation';
+import {nav} from '../../navigation/navName';
 
 const AccountScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   const params = useRoute<any>().params;
   const local_update = params?.local_update;
+  const {language} = useSelector((state: RootState) => state.language);
+  const {optionFriend, unlimitedTrimVideo, trySoftwareEncode, showDonate} =
+    useSelector((state: RootState) => state.setting);
+  const {tokenData} = useSelector((state: RootState) => state.spotify);
+  const socket = getSocket();
 
   const {userInfo, isLoading, user, updateAvatarLoading} = useSelector(
     (state: RootState) => state.user,
@@ -50,6 +67,10 @@ const AccountScreen = () => {
       }),
     );
   };
+
+  const handleSpotifyLogout = useCallback(() => {
+    dispatch(clearTokenData());
+  }, [dispatch]);
 
   const handleEditName = () => {
     setisEditName(!isEditName);
@@ -70,6 +91,18 @@ const AccountScreen = () => {
     );
   };
 
+  const handleClearCache = useCallback(async () => {
+    let totalSize = 0;
+    totalSize += (await deleteAllMp4Files(RNFS.DocumentDirectoryPath)) || 0;
+    totalSize += (await deleteAllMp4Files(RNFS.CachesDirectoryPath)) || 0;
+
+    dispatch(clearPostMoment());
+    ToastAndroid.show(
+      `${t('clean_cache_complete')} (${totalSize.toFixed(1)}Mb)`,
+      ToastAndroid.SHORT,
+    );
+  }, [dispatch]);
+
   const handleUpdateAvatar = async () => {
     setvisibleBigAvatar(true);
   };
@@ -79,80 +112,16 @@ const AccountScreen = () => {
     }
   }, [local_update]);
 
-  const [updateInfo, setUpdateInfo] = useState<UpdateInfoType | null>(null);
-  const [updateAPKInfo, setupdateAPKInfo] = useState<any>(null);
-  const [downloadProgress, setDownloadProgress] = useState(0);
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [decriptionUpdate, setDecriptionUpdate] = useState('');
-
-  const handleCodePushUpdate = useCallback(async () => {
-    setUpdateInfo('CHECKING_FOR_UPDATE');
-    setIsPopupVisible(true);
-
-    try {
-      const apkUpdate = await checkUpdateApk();
-      if (apkUpdate) {
-        setupdateAPKInfo(apkUpdate);
-        setDecriptionUpdate(apkUpdate?.decriptionUpdate);
-        return;
-      }
-
-      const update = await codePush.checkForUpdate(CODEPUSH_DEPLOYMENTKEY());
-      if (!update || (update && checkVersionCodePush(update.label))) {
-        setUpdateInfo('UP_TO_DATE');
-        setDecriptionUpdate('');
-      } else {
-        setUpdateInfo('UPDATE_AVAILABLE');
-        setDecriptionUpdate(update?.description);
-      }
-    } catch (error: any) {
-      dispatch(
-        setMessage({
-          message: JSON.stringify(error.message),
-          type: t('error'),
-        }),
-      );
-      setUpdateInfo('ERROR');
-    }
-  }, []);
-
-  const handleSetting = () => {
-    hapticFeedback();
-    navigationTo(nav.setting);
-  };
-
-  const onUpdate = useCallback(() => {
-    setUpdateInfo('DOWNLOADING_PACKAGE');
-    codePush.sync(
-      {
-        updateDialog: undefined,
-        installMode: codePush.InstallMode.IMMEDIATE,
-        deploymentKey: CODEPUSH_DEPLOYMENTKEY(),
-      },
-      status => {
-        switch (status) {
-          case codePush.SyncStatus.UPDATE_INSTALLED:
-            setUpdateInfo('UPDATE_INSTALLED');
-            setDecriptionUpdate('');
-            break;
-          case codePush.SyncStatus.UP_TO_DATE:
-            setUpdateInfo('UP_TO_DATE');
-            setDecriptionUpdate('');
-            break;
-          case codePush.SyncStatus.UNKNOWN_ERROR:
-          case codePush.SyncStatus.UPDATE_IGNORED:
-            setUpdateInfo('ERROR');
-            setDecriptionUpdate('');
-            break;
-          default:
-            setUpdateInfo(getStatusFromCodePush(status)); // Hàm helper để map status
-        }
-      },
-      progress => {
-        setDownloadProgress(progress.receivedBytes / progress.totalBytes);
-      },
-    );
-  }, []);
+  const {
+    handleCodePushUpdate,
+    onUpdate,
+    updateInfo,
+    decriptionUpdate,
+    updateAPKInfo,
+    downloadProgress,
+    isPopupVisible,
+    setIsPopupVisible,
+  } = useCodePushUpdate();
 
   const handleCheckUpdateAPK = useCallback(async () => {
     Linking.openURL(updateAPKInfo.downloadUrl);
@@ -160,102 +129,158 @@ const AccountScreen = () => {
 
   const onPostpone = useCallback(() => {
     setIsPopupVisible(false);
-    setTimeout(() => {
-      setUpdateInfo(null);
-    }, 900);
   }, []);
 
-  const handlePressGithub = useCallback(() => {
-    hapticFeedback();
-    Linking.openURL('https://github.com/quockhanh2004');
-  }, []);
+  const switches = [
+    {
+      value: optionFriend,
+      onPress: (val: boolean) => dispatch(setOptionFriend(val)),
+      title: t('multi_option_friend'),
+    },
+    {
+      value: unlimitedTrimVideo,
+      onPress: (val: boolean) => dispatch(setUnlimitedTrimVideo(val)),
+      title: t('unlimited_trim_video'),
+    },
+    {
+      value: trySoftwareEncode,
+      onPress: (val: boolean) => dispatch(setTrySoftwareEncode(val)),
+      title: t('use_software_encode_video'),
+    },
+    {
+      value: !showDonate,
+      onPress: (val: boolean) => dispatch(setShowDonate(!val)),
+      title: t('hide_donate'),
+    },
+  ];
 
-  const handlePressFacebook = useCallback(() => {
-    hapticFeedback();
-    Linking.openURL('https://www.facebook.com/profile.php?id=61575901494417');
-  }, []);
+  const buttons = [
+    {
+      title: t('friend_manager'),
+      onPress: () => {
+        navigationTo(nav.friend);
+      },
+    },
+    {
+      title: t('check_update_app'),
+      onPress: handleCodePushUpdate,
+      color: Colors.primary,
+    },
+    {title: t('clean_cache'), onPress: handleClearCache, color: Colors.green30},
+    tokenData && {
+      title: t('logout_spotify'),
+      onPress: handleSpotifyLogout,
+      color: Colors.spotify,
+    },
+    {
+      title: t('logout'),
+      onPress: () => {
+        dispatch(logout());
+        dispatch(setOldPosts([]));
+        dispatch(setFriends([]));
+        dispatch(clearListChat());
+        socket?.disconnect();
+      },
+      color: Colors.red20,
+    },
+  ].filter(Boolean);
 
   return (
     <>
-      <Header rightIcon={'ic_setting'} rightIconAction={handleSetting} />
-      <ScrollView
-        refreshControl={
-          <RefreshControl onRefresh={handleRefresh} refreshing={isLoading} />
-        }
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: 'center',
-        }}>
-        <View flex-1 bg-black centerV gap-24>
-          <UserInfo
-            dataUser={userInfo}
-            handleEditName={handleEditName}
-            handleUpdateAvatar={handleUpdateAvatar}
-            updateAvatarLoading={updateAvatarLoading}
-          />
-          <View paddingH-23>
-            <MainButton
-              label={t('check_update_app')}
-              onPress={handleCodePushUpdate}
+      <Header />
+      <View flex-1 bg-black centerV paddingH-12>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={handleRefresh}
+              tintColor={Colors.white}
+            />
+          }
+          contentContainerStyle={{gap: 8}}
+          showsVerticalScrollIndicator={false}>
+          <View>
+            <UserInfo
+              dataUser={userInfo}
+              handleEditName={handleEditName}
+              handleUpdateAvatar={handleUpdateAvatar}
+              updateAvatarLoading={updateAvatarLoading}
             />
           </View>
-
-          <TouchableOpacity onPress={handlePressGithub}>
-            <View center row gap-8>
-              <Icon
-                assetGroup="icons"
-                assetName="ic_github"
-                tintColor={Colors.grey30}
-                size={20}
-              />
-              <Text grey30>quockhanh2004</Text>
+          <View marginT-10>
+            <SocialLinks />
+          </View>
+          <>
+            <View height={30} />
+            <View
+              bg-grey10
+              paddingH-8
+              br20
+              marginB-1
+              row
+              spread
+              paddingV-8
+              centerV>
+              <Text white text70BL flexS>
+                {t('language')}
+              </Text>
+              <View width={'40%'}>
+                <TextSwitch
+                  onChange={(val: string) => {
+                    dispatch(setLanguage(val as Language));
+                  }}
+                  option={[Language.EN, Language.VI]}
+                  value={language}
+                />
+              </View>
             </View>
-          </TouchableOpacity>
+            {switches.map((s, idx) => (
+              <ItemSwitch key={idx} {...s} />
+            ))}
 
-          <TouchableOpacity onPress={handlePressFacebook}>
-            <View center row gap-8>
-              <Icon
-                assetGroup="icons"
-                assetName="ic_facebook"
-                tintColor={Colors.grey30}
-                size={20}
+            <View />
+            {buttons.map((b, idx) => (
+              <ItemButton
+                key={idx}
+                onPress={b?.onPress || (() => {})}
+                title={b?.title || ''}
+                color={b?.color}
               />
-              <Text grey30>Locket Upload</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+            ))}
+          </>
+        </ScrollView>
+      </View>
 
-        <EditTextDialog
-          visible={isEditName}
-          onDismiss={onDismissEditName}
-          label={t('edit_name')}
-          onConfirm={handleConfirmEditName}
-          isEditName={true}
-          placeholder={t('first_name')}
-          placeholder2={t('last_name')}
-          value={userInfo?.firstName || ''}
-          value2={userInfo?.lastName || ''}
-          isLoading={isLoading}
-        />
-        <UpdatePopup
-          isVisible={isPopupVisible}
-          updateInfo={updateInfo || 'CHECK_UPDATE'}
-          progress={downloadProgress}
-          onUpdate={onUpdate}
-          decriptionUpdate={decriptionUpdate}
-          onPostpone={onPostpone}
-          onCheckUpdate={handleCodePushUpdate}
-          apkUpdateInfo={updateAPKInfo}
-          onUpdateApk={handleCheckUpdateAPK}
-        />
-        <ModalImageViewBlur
-          image={userInfo?.photoUrl || ''}
-          visible={visibleBigAvatar}
-          onCancel={function (): void {
-            setvisibleBigAvatar(false);
-          }}
-        />
-      </ScrollView>
+      <EditTextDialog
+        visible={isEditName}
+        onDismiss={onDismissEditName}
+        label={t('edit_name')}
+        onConfirm={handleConfirmEditName}
+        isEditName={true}
+        placeholder={t('first_name')}
+        placeholder2={t('last_name')}
+        value={userInfo?.firstName || ''}
+        value2={userInfo?.lastName || ''}
+        isLoading={isLoading}
+      />
+      <UpdatePopup
+        isVisible={isPopupVisible}
+        updateInfo={updateInfo || 'CHECK_UPDATE'}
+        progress={downloadProgress}
+        onUpdate={onUpdate}
+        decriptionUpdate={decriptionUpdate}
+        onPostpone={onPostpone}
+        onCheckUpdate={handleCodePushUpdate}
+        apkUpdateInfo={updateAPKInfo}
+        onUpdateApk={handleCheckUpdateAPK}
+      />
+      <ModalImageViewBlur
+        image={userInfo?.photoUrl || ''}
+        visible={visibleBigAvatar}
+        onCancel={function (): void {
+          setvisibleBigAvatar(false);
+        }}
+      />
     </>
   );
 };
