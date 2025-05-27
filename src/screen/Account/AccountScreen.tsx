@@ -238,7 +238,8 @@ const AccountScreen = () => {
               <ItemSwitch key={idx} {...s} />
             ))}
 
-            <View />
+            <View height={10} />
+
             {buttons.map((b, idx) => (
               <ItemButton
                 key={idx}

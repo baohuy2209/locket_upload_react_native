@@ -1,9 +1,18 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {getFriends} from '../action/friend.action';
+import {
+  acceptFriendRequest,
+  getFriends,
+  getIncommingFriend,
+  rejectFriendRequest,
+  removeFriend,
+} from '../action/friend.action';
 import {Friend, OptionSend} from '../../models/friend.model';
 
 interface InitialState {
   friends: {
+    [key: string]: Friend;
+  };
+  friendRequests: {
     [key: string]: Friend;
   };
   isLoadFriends: boolean;
@@ -16,6 +25,7 @@ const friendsSlice = createSlice({
   name: 'friends',
   initialState: {
     friends: {},
+    friendRequests: {},
     isLoadFriends: false,
     selected: [],
     customListFriends: [],
@@ -69,7 +79,45 @@ const friendsSlice = createSlice({
       })
       .addCase(getFriends.rejected, state => {
         state.isLoadFriends = false;
-      });
+      })
+
+      .addCase(getIncommingFriend.fulfilled, (state, action) => {
+        const friendRequestsObject = action.payload.reduce(
+          (acc: {[x: string]: any}, item: {uid: string}) => {
+            acc[item.uid] = item;
+            return acc;
+          },
+          {} as {[key: string]: Friend},
+        );
+        state.friendRequests = friendRequestsObject;
+      })
+
+      .addCase(
+        acceptFriendRequest.fulfilled,
+        (state, action: PayloadAction<Friend>) => {
+          delete state.friendRequests[action.payload.uid];
+          state.friends[action.payload.uid] = action.payload;
+        },
+      )
+
+      .addCase(
+        rejectFriendRequest.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          delete state.friendRequests[action.payload];
+        },
+      )
+
+      .addCase(
+        removeFriend.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          delete state.friends[action.payload];
+          if (state.selected.includes(action.payload)) {
+            state.selected = state.selected.filter(
+              uid => uid !== action.payload,
+            );
+          }
+        },
+      );
   },
 });
 
