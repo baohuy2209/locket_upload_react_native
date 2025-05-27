@@ -1,21 +1,18 @@
-MIT License
+Copyright (c) 2025 Phạm Ngọc Quốc Khánh
 
-Copyright (c) [2025] [Phạm Ngọc Quốc Khánh]
+Permission is hereby granted to any person obtaining a copy of this software and associated documentation files (the "Software"), to use, copy, modify, merge, publish, and distribute the Software, **for personal or non-commercial purposes only**, subject to the following conditions:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. **Attribution** must be given to the original author (Phạm Ngọc Quốc Khánh) in any use, fork, or distribution of this Software.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+2. **Commercial use is strictly prohibited**, including but not limited to:
+   - Selling or licensing the Software or its derivatives;
+   - Using the Software in any product, service, or application intended for commercial use;
+   - Integrating the Software into paid platforms or tools.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+3. **Use of the Software for academic or open-source AI research and training purposes is permitted**, provided such use is non-commercial and proper attribution is maintained.
+
+4. All contributions made to this repository will be automatically licensed under the same terms as this license.
+
+Any use not explicitly permitted by this license is prohibited without prior written permission from the author.
+
+For commercial licensing inquiries, please contact: phamngocquockhanh2004@gmail.com
