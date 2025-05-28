@@ -149,7 +149,7 @@ const AccountScreen = () => {
     },
     {
       value: !showDonate,
-      onPress: (val: boolean) => dispatch(setShowDonate(!val)),
+      onPress: (val: boolean) => dispatch(setShowDonate(val)),
       title: t('hide_donate'),
     },
   ];
