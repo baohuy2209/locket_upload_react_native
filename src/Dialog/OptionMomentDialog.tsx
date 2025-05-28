@@ -25,7 +25,7 @@ const OptionMomentDialog: React.FC<OptionMomentDialogProps> = ({
   moment,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const token = useSelector((state: RootState) => state.user.user?.idToken);
+  const user = useSelector((state: RootState) => state.user.user);
   const handleOptionSelect = (option: string) => {
     switch (option) {
       case ActionType.DOWNLOAD_IMAGE:
@@ -48,7 +48,8 @@ const OptionMomentDialog: React.FC<OptionMomentDialogProps> = ({
           deleteMoment({
             momentId: moment.canonical_uid,
             ownerId: moment.user,
-            token: token || '',
+            token: user?.idToken || '',
+            isMyMoment: moment.user === user?.localId,
           }),
         );
         break;

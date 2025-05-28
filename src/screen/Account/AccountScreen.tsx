@@ -210,45 +210,44 @@ const AccountScreen = () => {
           <View marginT-10>
             <SocialLinks />
           </View>
-          <>
-            <View height={30} />
-            <View
-              bg-grey10
-              paddingH-8
-              br20
-              marginB-1
-              row
-              spread
-              paddingV-8
-              centerV>
-              <Text white text70BL flexS>
-                {t('language')}
-              </Text>
-              <View width={'40%'}>
-                <TextSwitch
-                  onChange={(val: string) => {
-                    dispatch(setLanguage(val as Language));
-                  }}
-                  option={[Language.EN, Language.VI]}
-                  value={language}
-                />
-              </View>
-            </View>
-            {switches.map((s, idx) => (
-              <ItemSwitch key={idx} {...s} />
-            ))}
 
-            <View height={10} />
-
-            {buttons.map((b, idx) => (
-              <ItemButton
-                key={idx}
-                onPress={b?.onPress || (() => {})}
-                title={b?.title || ''}
-                color={b?.color}
+          <View height={30} />
+          <View
+            bg-grey10
+            paddingH-8
+            br20
+            marginB-1
+            row
+            spread
+            paddingV-8
+            centerV>
+            <Text white text70BL flexS>
+              {t('language')}
+            </Text>
+            <View width={'40%'}>
+              <TextSwitch
+                onChange={(val: string) => {
+                  dispatch(setLanguage(val as Language));
+                }}
+                option={[Language.EN, Language.VI]}
+                value={language}
               />
-            ))}
-          </>
+            </View>
+          </View>
+          {switches.map((s, idx) => (
+            <ItemSwitch key={idx} {...s} />
+          ))}
+
+          <View height={10} />
+
+          {buttons.map((b, idx) => (
+            <ItemButton
+              key={idx}
+              onPress={b?.onPress || (() => {})}
+              title={b?.title || ''}
+              color={b?.color}
+            />
+          ))}
         </ScrollView>
       </View>
 

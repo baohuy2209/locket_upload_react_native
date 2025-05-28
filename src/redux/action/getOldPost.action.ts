@@ -102,27 +102,18 @@ interface DeleteMomentParam {
   momentId: string;
   ownerId: string;
   token: string;
+  isMyMoment?: boolean;
 }
 
 export const deleteMoment = createAsyncThunk(
   'deleteMoment',
   async (data: DeleteMomentParam, thunkApi) => {
     try {
-      const user = decodeJwt(data.token) as User;
-      if (!user) {
-        thunkApi.dispatch(
-          setMessage({
-            message: t('user_not_found'),
-            type: t('error'),
-          }),
-        );
-        return thunkApi.rejectWithValue('User not found');
-      }
       const bodyRequest = {
         data: {
           moment_uid: data.momentId,
           owner_uid: data.ownerId,
-          delete_globally: data.ownerId === user.localId,
+          delete_globally: data.isMyMoment || false,
         },
       };
       await instanceLocket.post('/deleteMomentV2', bodyRequest, {
@@ -146,7 +137,6 @@ export const deleteMoment = createAsyncThunk(
 
 import RNFS from 'react-native-fs';
 import {ToastAndroid} from 'react-native';
-import {User} from '../../models/user.model';
 export const downloadImage = createAsyncThunk(
   'downloadImage',
   async (uri: string, thunkApi) => {
