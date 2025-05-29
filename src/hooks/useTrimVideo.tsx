@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {NativeEventEmitter, NativeModules} from 'react-native';
 import {clearAppCache} from '../util/uploadImage';
-import {clearNavigation} from '../screen/Home';
+import {clearNavigation} from '../navigation/HomeNavigation';
 
 const useTrimVideo = () => {
   const [videoOut, setVideoOut] = useState<string | null>(null);

@@ -15,7 +15,6 @@ const initialState: SettingState = {
   },
   appVersion: '',
   optionFriend: false,
-  unlimitedTrimVideo: false,
   trySoftwareEncode: false,
   usingSpotifyMod: false,
   postStyle: ColorDefault,
@@ -42,10 +41,6 @@ const settingSlice = createSlice({
 
     setOptionFriend(state, action: PayloadAction<boolean>) {
       state.optionFriend = action.payload;
-    },
-
-    setUnlimitedTrimVideo(state, action: PayloadAction<boolean>) {
-      state.unlimitedTrimVideo = action.payload;
     },
 
     setTrySoftwareEncode(state, action: PayloadAction<boolean>) {
@@ -110,7 +105,6 @@ export const {
   setCameraSettings,
   setCurrentVersion,
   setOptionFriend,
-  setUnlimitedTrimVideo,
   setTrySoftwareEncode,
   setPostStyle,
   setSetting,

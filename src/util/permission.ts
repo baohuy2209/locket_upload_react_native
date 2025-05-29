@@ -22,6 +22,10 @@ export const requestMediaPermission = async (): Promise<boolean> => {
         return granted === PermissionsAndroid.RESULTS.GRANTED;
       }
       // Android < 11 (API 30) không cần quyền hoặc xử lý tùy app
+      const grantedFile = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      );
+      return grantedFile === PermissionsAndroid.RESULTS.GRANTED;
     }
 
     // iOS hoặc platform khác

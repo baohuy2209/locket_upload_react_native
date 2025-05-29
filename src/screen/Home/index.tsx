@@ -3,7 +3,7 @@
 
 // React & React Native Imports
 import React, {useCallback, useEffect, useState} from 'react';
-import {Dimensions} from 'react-native';
+import {Dimensions, Platform} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {
   useFocusEffect,
@@ -60,6 +60,11 @@ interface MediaType {
   uri: string;
   type?: 'video' | 'image' | string;
 }
+
+const osVersion = {
+  type: Platform.OS,
+  version: Platform.Version,
+};
 const screenHeight = Dimensions.get('window').height;
 const cropHeight = screenHeight * 0.8;
 
@@ -69,15 +74,13 @@ const HomeScreen = () => {
 
   const route = useRoute<RouteProp<{params: RouteParams}>>();
   const dispatch = useDispatch<AppDispatch>();
-  const trimmedVideoUri = useTrimVideo();
-
   const {user, userInfo} = useSelector((state: RootState) => state.user);
+
+  const trimmedVideoUri = useTrimVideo();
   const {postMoment, isLoading} = useSelector(
     (state: RootState) => state.postMoment,
   );
-  const {unlimitedTrimVideo, postStyle} = useSelector(
-    (state: RootState) => state.setting,
-  );
+  const {postStyle} = useSelector((state: RootState) => state.setting);
   const {selected, optionSend, customListFriends} = useSelector(
     (state: RootState) => state.friends,
   );
@@ -225,7 +228,6 @@ const HomeScreen = () => {
   };
 
   const handleConfirmSelectMedia = async (value: 'gallery' | 'camera') => {
-    // setVisibleSelectMedia(false);
     setLocalLoading(true);
     await onSelectMedia(value);
     setLocalLoading(false);
@@ -267,8 +269,13 @@ const HomeScreen = () => {
       navigationTo(nav.crop, {imageUri: media.uri});
     } else if (media.type?.startsWith('video')) {
       setIsVideo(true);
-      showEditor(media.uri, {
-        maxDuration: unlimitedTrimVideo ? undefined : 7,
+      let videouri;
+      if (osVersion.type === 'android' && Number(osVersion.version) <= 29) {
+        videouri = media.uri.replace('file://', '');
+      } else {
+        videouri = media.uri;
+      }
+      showEditor(videouri, {
         saveButtonText: t('save'),
         cancelButtonText: t('cancel'),
         trimmingText: t('processing'),

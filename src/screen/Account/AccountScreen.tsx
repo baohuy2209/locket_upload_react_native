@@ -23,7 +23,6 @@ import {
   setOptionFriend,
   setShowDonate,
   setTrySoftwareEncode,
-  setUnlimitedTrimVideo,
 } from '../../redux/slice/setting.slice';
 import {clearTokenData} from '../../redux/slice/spotify.slice';
 import {deleteAllMp4Files} from '../../util/uploadVideo';
@@ -48,8 +47,9 @@ const AccountScreen = () => {
   const params = useRoute<any>().params;
   const local_update = params?.local_update;
   const {language} = useSelector((state: RootState) => state.language);
-  const {optionFriend, unlimitedTrimVideo, trySoftwareEncode, showDonate} =
-    useSelector((state: RootState) => state.setting);
+  const {optionFriend, trySoftwareEncode, showDonate} = useSelector(
+    (state: RootState) => state.setting,
+  );
   const {tokenData} = useSelector((state: RootState) => state.spotify);
   const socket = getSocket();
 
@@ -136,11 +136,6 @@ const AccountScreen = () => {
       value: optionFriend,
       onPress: (val: boolean) => dispatch(setOptionFriend(val)),
       title: t('multi_option_friend'),
-    },
-    {
-      value: unlimitedTrimVideo,
-      onPress: (val: boolean) => dispatch(setUnlimitedTrimVideo(val)),
-      title: t('unlimited_trim_video'),
     },
     {
       value: trySoftwareEncode,

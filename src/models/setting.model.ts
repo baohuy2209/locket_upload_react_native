@@ -14,7 +14,6 @@ export interface SettingState {
   cameraSettings: CameraSetting;
   appVersion: string;
   optionFriend: boolean;
-  unlimitedTrimVideo: boolean;
   trySoftwareEncode: boolean;
   usingSpotifyMod: boolean;
   postStyle: PostStyle;

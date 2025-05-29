@@ -56,29 +56,16 @@ const PostForm: React.FC<Props> = ({
   onLongPress,
   setOverlay,
 }) => {
-  // const dispatch = useDispatch<AppDispatch>();
-  // const {
-  //   showSelectColor,
-  //   // guideSpotify
-  // } = useSelector((state: RootState) => state.guide);
   const {currentPlay} = useSelector((state: RootState) => state.spotify);
 
   const [type, setType] = useState(OverlayType.standard);
   const [textOverlay, setTextOverlay] = useState('');
-
-  // const handelNotShowAgainSelectColor = () => {
-  //   dispatch(setShowSelectColor(false));
-  // };
 
   const handlePressCamera = async () => {
     hapticFeedback();
     await requestCameraPermission();
     navigationTo(nav.camera);
   };
-
-  // const handleNotShowAgainSelectSpotify = () => {
-  //   dispatch(setGuideSpotify(false));
-  // };
 
   useEffect(() => {
     if (setOverlay) {
@@ -171,24 +158,6 @@ const PostForm: React.FC<Props> = ({
           <Icon assetName="ic_camera" size={24} tintColor={Colors.primary} />
         </TouchableOpacity>
       </View>
-      {/* <GuideDialog
-        visible={showSelectColor}
-        label={t('guied_open_select_colors')}
-        decription={t('guied_open_select_colors_desc')}
-        guideAssetsVideo={{
-          uri: 'https://quockhanh020924.id.vn/drive/videos/guide_select_colors.mp4',
-        }}
-        onDismiss={handelNotShowAgainSelectColor}
-      /> */}
-      {/* <GuideDialog
-        visible={guideSpotify}
-        label={t('guied_open_select_music')}
-        decription={t('guied_open_select_music_desc')}
-        guideAssetsVideo={{
-          uri: 'https://quockhanh020924.id.vn/drive/videos/guide_spotify.mp4',
-        }}
-        onDismiss={handleNotShowAgainSelectSpotify}
-      /> */}
     </View>
   );
 };
