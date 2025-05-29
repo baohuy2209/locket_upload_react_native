@@ -170,7 +170,6 @@ export const deleteMessage = createAsyncThunk(
           ...loginHeader,
         },
       });
-      console.log(response.data);
 
       if (response.data?.result?.status === 200) {
         return {

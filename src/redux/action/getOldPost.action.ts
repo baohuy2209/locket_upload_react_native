@@ -140,7 +140,7 @@ import {ToastAndroid} from 'react-native';
 export const downloadImage = createAsyncThunk(
   'downloadImage',
   async (uri: string, thunkApi) => {
-    const downloadDest = `${RNFS.DownloadDirectoryPath}/${Date.now()}.jpg`;
+    const downloadDest = `${RNFS.PicturesDirectoryPath}/${Date.now()}.jpg`;
     try {
       await RNFS.downloadFile({
         fromUrl: uri,
@@ -172,7 +172,10 @@ export const downloadVideo = createAsyncThunk(
     }
 
     //lưu vào thư mục download của thiết bị
-    const downloadDest = `${RNFS.DownloadDirectoryPath}/${Date.now()}.mp4`;
+    const downloadDest = `${
+      RNFS.ExternalStorageDirectoryPath
+    }/Movies/${Date.now()}.mp4`;
+
     //sử dụng axios để tải video về
     try {
       await RNFS.downloadFile({

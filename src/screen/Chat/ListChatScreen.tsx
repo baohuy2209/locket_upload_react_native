@@ -1,8 +1,8 @@
 import React, {useCallback} from 'react';
 import {Text, View} from 'react-native-ui-lib';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../redux/store';
-import {FlatList} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../../redux/store';
+import {FlatList, RefreshControl} from 'react-native';
 import {ListChatType} from '../../models/chat.model';
 import ItemListChat from './ItemListChat';
 import Header from '../../components/Header';
@@ -12,11 +12,14 @@ import {nav} from '../../navigation/navName';
 import {useListChat} from './hooks/useListChat';
 import {navigationTo} from '../../navigation/HomeNavigation';
 import {hapticFeedback} from '../../util/haptic';
+import {getMessage} from '../../redux/action/chat.action';
 
 interface ListChatScreenProps {}
 
 const ListChatScreen: React.FC<ListChatScreenProps> = () => {
-  const {listMessages} = useListChat();
+  const dispatch = useDispatch<AppDispatch>();
+  const {listMessages, isLoadChat} = useListChat();
+  const token = useSelector((state: RootState) => state.user.user?.idToken);
   const {friends} = useSelector((state: RootState) => state.friends);
 
   const handlePressItem = useCallback(
@@ -29,6 +32,12 @@ const ListChatScreen: React.FC<ListChatScreenProps> = () => {
     },
     [friends],
   );
+
+  const handleRefresh = useCallback(() => {
+    if (isLoadChat && token) {
+      dispatch(getMessage(token || ''));
+    }
+  }, [dispatch, isLoadChat, token]);
 
   const renderItem = useCallback(
     ({item}: {item: ListChatType}) =>
@@ -44,6 +53,9 @@ const ListChatScreen: React.FC<ListChatScreenProps> = () => {
       <View height={20} />
       <FlatList
         data={listMessages}
+        refreshControl={
+          <RefreshControl refreshing={isLoadChat} onRefresh={handleRefresh} />
+        }
         keyExtractor={item => item.uid}
         renderItem={renderItem}
         removeClippedSubviews
